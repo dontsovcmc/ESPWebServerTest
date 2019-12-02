@@ -1,0 +1,5 @@
+executor
+requests
+beautifulsoup4
+lxml
+pytest
