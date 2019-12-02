@@ -25,6 +25,20 @@ def channel(pytestconfig):
     return pytestconfig.getoption("channel")
 
 
+@pytest.fixture()
+def ini(pytestconfig):
+    return pytestconfig.getoption("ini")
+
+
+@pytest.fixture()
+def project(pytestconfig):
+    return pytestconfig.getoption("project")
+
+
+def test_compile():
+    p
+
+
 @pytest.fixture(scope="module")
 def session():
     """
