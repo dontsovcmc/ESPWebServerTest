@@ -3,5 +3,8 @@
 def pytest_addoption(parser):
     parser.addoption("--ssid", action="store", help="WiFiManager AP name")
     parser.addoption("--channel", action="store", default=1, type=int, help="WiFiManager AP channel")
-    parser.addoption("--ini", action="store", help="path to platformio.ini file")
-    parser.addoption("--project", action="store", help="path to source project")
+    parser.addoption("--port", action="store", help="upload port")
+    parser.addoption("--conf", action="store", help="path to platformio.ini file")
+    parser.addoption("--dir", action="store", help="path to folder with project files")
+    parser.addoption("--lib", action="store", help="path to library your want to include")
+    parser.addoption("--noupload", action="store_true", help="skip upload firmware to chip, start test immediatly")

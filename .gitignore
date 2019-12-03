@@ -2,3 +2,8 @@ logs/
 .idea/
 __pycache__/
 venv/
+venv2/
+.pio/
+.travis.yml
+*.pyc
+sandbox/

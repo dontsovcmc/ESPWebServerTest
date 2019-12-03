@@ -7,6 +7,7 @@ from logger import log
 #TODO: - linux support
 #      - create pip package
 
+
 class WiFiInfo:
     """
     Wi-Fi network description
