@@ -89,10 +89,6 @@ def build_and_upload(project_dir, project_conf, lib, upload_port, build):
     for filename in glob.iglob(os.path.join(project_dir, '*.*')):
         shutil.copy(filename, SRC_DIR)
 
-    # rename 'ino' file to 'cpp'
-    for filename in glob.iglob(os.path.join(SRC_DIR, '*.ino')):
-        os.rename(filename, filename.replace('.ino', '') + '.cpp')
-
     # copy 'platformio.ini' file
     shutil.copy(project_conf, SANDBOX_DIR)
 
