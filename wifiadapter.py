@@ -1,4 +1,6 @@
 
+import time
+
 from executor import execute
 from bs4 import BeautifulSoup
 
@@ -16,7 +18,7 @@ class WiFiInfo:
         self.ssid = None
         self.bssid = None
         self.rssi = None
-        self.channel = None
+        self.channel = None   # can be '132,1'
 
     def __str__(self):
         return self.ssid + '\t(' + str(self.rssi) + ') ' + '\tch=' + str(self.channel)
@@ -115,7 +117,7 @@ class WiFiAdapter:
         i.ssid = self._parse_lines(out, 'SSID: ')
         i.bssid = self._parse_lines(out, 'BSSID: ')
         i.rssi = self._parse_lines(out, 'agrCtlRSSI: ')
-        i.channel = int(self._parse_lines(out, 'channel: '))
+        i.channel = self._parse_lines(out, 'channel: ')
 
         return i
 
@@ -140,6 +142,17 @@ class WiFiAdapter:
         Available interfaces
         """
         print(execute('networksetup -listallhardwareports', capture=True))
+
+    def wait_network(self, ssid, timeout=20.0):
+        t = time.time()
+        while time.time() - t < timeout:
+            all = self.list()
+            for s in all:
+                if s.ssid == ssid:
+                    return True
+            time.sleep(2)
+
+        return False
 
 
 wc = WiFiAdapter()

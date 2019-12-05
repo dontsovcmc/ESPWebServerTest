@@ -1,70 +1,22 @@
 
 import os
 import time
-from requests import Session
-from wifiadapter import WiFiAdapter
-import pytest
-import difflib
-
 from bs4 import BeautifulSoup
+from logger import log
 
-from logger import log, PROJ_DIR, LOG_DIR, base_name
-
-
-TMPL_DIR = os.path.join(PROJ_DIR, 'templates')
+TMPL_DIR = os.path.join(os.path.dirname(__file__), 'html')
 
 #TODO time .2
 
-@pytest.fixture()
-def ssid(pytestconfig):
-    return pytestconfig.getoption("ssid")
+
+from compile import project_dir, project_conf, lib, upload_port, noupload, compile
+from compile import ssid, channel
+from adapter import session, adapter
+from utils import diff_html
 
 
-@pytest.fixture()
-def channel(pytestconfig):
-    return pytestconfig.getoption("channel")
-
-
-@pytest.fixture()
-def ini(pytestconfig):
-    return pytestconfig.getoption("ini")
-
-
-@pytest.fixture(scope="module")
-def session():
-    """
-    HTTP request session
-    """
-    yield Session()
-
-
-@pytest.fixture(scope="module")
-def adapter():
-    """
-    Control notebook Wi-Fi adapter
-    """
-    yield WiFiAdapter()
-
-
-def check_content(output, templ_name):
-    """
-    TODO: check ydiff utility
-    """
-
-    file_path = os.path.join(TMPL_DIR, templ_name)
-
-    with open(file_path, 'r') as f:
-        tmpl = f.readlines()
-        output = output.splitlines()
-
-        diff = difflib.unified_diff(tmpl, output)
-        if '\n'.join(diff):
-            diff = difflib.HtmlDiff().make_file(tmpl, output, '', '', context=True, numlines=3)
-            with open(os.path.join(LOG_DIR, base_name + '_diff_' + templ_name), 'w') as f:
-                f.write(diff)
-
-            return False
-        return True
+def test_compile(compile):
+    pass
 
 
 def test_connect(ssid, adapter):
@@ -91,7 +43,7 @@ def test_index(session):
     ret = session.get('http://192.168.4.1')
     assert ret.ok
     log.info('Root response: {} sec'.format(time.time() - t))
-    assert check_content(ret.text, 'index.html')
+    assert diff_html(ret.text, TMPL_DIR, 'index.html')
 
 
 def test_wifi0(session):
@@ -99,7 +51,7 @@ def test_wifi0(session):
     ret = session.get('http://192.168.4.1/0wifi?')
     assert ret.ok
     log.info('/0wifi response: {} sec'.format(time.time() - t))
-    assert check_content(ret.text, 'wifi0.html')
+    assert diff_html(ret.text, TMPL_DIR, 'wifi0.html')
 
 
 def test_i(session):
@@ -108,7 +60,7 @@ def test_i(session):
     assert ret.ok
     log.info('/i response: {} sec'.format(time.time() - t))
 
-    soup = BeautifulSoup(ret.text, "html.parser")
+    soup = BeautifulSoup(ret.text, 'html.parser')
 
     dl = soup.find('dl')
 

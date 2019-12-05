@@ -23,7 +23,19 @@ def upload_port(pytestconfig):
 
 @pytest.fixture(scope='session')
 def project_conf(pytestconfig):
-    return pytestconfig.getoption("conf") or os.path.join(PROJ_DIR, 'platformio.ini')
+    """
+    Find platformio.ini file
+    """
+    # command line argument
+    if pytestconfig.getoption("conf"):
+        return pytestconfig.getoption("conf")
+
+    # pytest run directory
+    if os.path.isfile(os.path.join(pytestconfig.args[0], 'platformio.ini')):
+        return os.path.join(pytestconfig.args[0], 'platformio.ini')
+
+    # default
+    return os.path.join(PROJ_DIR, 'platformio.ini')
 
 
 @pytest.fixture(scope='session')
@@ -42,7 +54,7 @@ def noupload(pytestconfig):
 
 
 @pytest.fixture(autouse=True, scope='session')
-def setup(project_dir, project_conf, lib, upload_port, noupload):
+def compile(project_dir, project_conf, lib, upload_port, noupload):
 
     """
     Init sandbox: copy library and ino/cpp file
@@ -66,8 +78,12 @@ def setup(project_dir, project_conf, lib, upload_port, noupload):
         os.mkdir(SRC_DIR)
     log.info('Folder cleaned')
 
-    log.info('Platformio path: ' + execute('which platformio', capture=True))
-    execute('platformio init', capture=True)
+    log.info('Platformio path: ' + execute('which platformio',
+                                           directory=SANDBOX_DIR,
+                                           capture=True))
+    execute('platformio init',
+            directory=SANDBOX_DIR,
+            capture=True)
 
     # copy files to '/sandbox/src' folder
     for filename in glob.iglob(os.path.join(project_dir, '*.*')):
@@ -97,5 +113,12 @@ def setup(project_dir, project_conf, lib, upload_port, noupload):
     log.info('Upload finished\n=========\nSTART TESTING\n=========\n')
 
 
-def test_dummy(setup):
-    pass
+@pytest.fixture()
+def ssid(pytestconfig):
+    return pytestconfig.getoption("ssid")
+
+
+@pytest.fixture()
+def channel(pytestconfig):
+    return pytestconfig.getoption("channel")
+

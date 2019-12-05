@@ -17,10 +17,10 @@ class Logger(object):
         log = logging.getLogger('')
         log.setLevel(logging.INFO)
 
-        if not os.path.isdir('logs'):
-            os.makedirs('logs')
+        if not os.path.isdir(LOG_DIR):
+            os.makedirs(LOG_DIR)
 
-        fh = logging.FileHandler(os.path.join('logs', base_name + '.log'), mode='w')
+        fh = logging.FileHandler(os.path.join(LOG_DIR, base_name + '.log'), mode='w')
         fh.setLevel(logging.INFO)
 
         formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')

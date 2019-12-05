@@ -7,3 +7,4 @@ venv2/
 .travis.yml
 *.pyc
 sandbox/
+.pytest_cache
