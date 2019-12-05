@@ -9,8 +9,8 @@ TMPL_DIR = os.path.join(os.path.dirname(__file__), 'html')
 #TODO time .2
 
 
-from compile import project_dir, project_conf, lib, upload_port, noupload, compile
-from compile import ssid, channel
+from build import project_dir, project_conf, lib, upload_port, compile
+from build import ssid, channel
 from adapter import session, adapter
 from utils import diff_html
 

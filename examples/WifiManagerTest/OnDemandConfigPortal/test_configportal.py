@@ -11,13 +11,13 @@ TMPL_DIR = os.path.join(os.path.dirname(__file__), 'html')
 #TODO time .2
 
 
-from compile import project_dir, project_conf, lib, upload_port, noupload, compile
-from compile import ssid, channel
+from build import project_dir, project_conf, lib, upload_port, build, build_and_upload
+from build import ssid, channel
 from adapter import session, adapter
 from utils import diff_html
 
 
-def test_init(compile):
+def test_init(build_and_upload):
     """
     Using compile argument emit run fixture that compiles and upload firmware
     """

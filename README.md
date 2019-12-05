@@ -57,4 +57,14 @@ Call:
 Profit!
 
 
+## WiFiManager example test
+
+1. open `examples/WiFiManagerTest/OnDemandConfigPortal` folder
+2. build firmware and upload it:
+`$ pytest --build --lib=/Users/user/Documents/WiFiManager --dir=/Users/user/Documents/WiFiManager/examples/DEV/OnDemandConfigPortal --port=/dev/cu.SLAB_USBtoUART`
+3. run tests:
+`$ pytest --ssid WM_ConnectAP --channel=8 --port=/dev/cu.SLAB_USBtoUART`
+3. see `logs` folder if errors
+
+
 

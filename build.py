@@ -22,6 +22,11 @@ def upload_port(pytestconfig):
 
 
 @pytest.fixture(scope='session')
+def build(pytestconfig):
+    return pytestconfig.getoption("build")
+
+
+@pytest.fixture(scope='session')
 def project_conf(pytestconfig):
     """
     Find platformio.ini file
@@ -48,18 +53,13 @@ def lib(pytestconfig):
     return pytestconfig.getoption("lib", '')
 
 
-@pytest.fixture(scope='session')
-def noupload(pytestconfig):
-    return pytestconfig.getoption("noupload")
-
-
 @pytest.fixture(autouse=True, scope='session')
-def compile(project_dir, project_conf, lib, upload_port, noupload):
+def build_and_upload(project_dir, project_conf, lib, upload_port, build):
 
     """
     Init sandbox: copy library and ino/cpp file
     """
-    if noupload:
+    if not build:
         log.info('No upload, skip compile&upload')
         log.info('Reset chip')
         log.info(execute('python -m esptool --port {} --after hard_reset chip_id'.format(upload_port), capture=True))
@@ -68,7 +68,7 @@ def compile(project_dir, project_conf, lib, upload_port, noupload):
     if not project_dir:
         log.error('project_dir is required')
     if not upload_port:
-        log.warn('no upload port defined')
+        log.warning('no upload port defined')
 
     # clean
     if os.path.isdir(SANDBOX_DIR):
